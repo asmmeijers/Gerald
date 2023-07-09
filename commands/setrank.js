@@ -8,18 +8,29 @@ module.exports = {
     .addUserOption(option => option.setName('target').setDescription('The member to set the rank for').setRequired(true))
     .addStringOption(option => option.setName('rank').setDescription('The new rank').setRequired(true)),
   async execute(interaction) {
-    const user = interaction.options.getUser('target');
-    const rank = interaction.options.getString('rank');
-
-    // Check if user is null
-    if (!user) {
-      return await interaction.reply({ content: 'User not found!', ephemeral: true });
+    // Check if guild is available
+    if (!interaction.guild) {
+      console.log('Guild not available');
+      return;
     }
 
-    const member = interaction.guild.members.cache.get(user.id);
+    const member = interaction.options.getMember('target');
+    const rank = interaction.options.getString('rank');
+
+    // Check if member is null
+    if (!member) {
+      console.log('Member not found');
+      return await interaction.reply({ content: 'Member not found!', ephemeral: true });
+    }
+
     const role = interaction.guild.roles.cache.find(r => r.name === rank);
+    if (!role) {
+      console.log('Role not found');
+      return await interaction.reply({ content: 'Role not found!', ephemeral: true });
+    }
+
     await member.roles.add(role);
     await member.setNickname(`${member.nickname.split(' | ')[0]} | ${member.nickname.split(' | ')[1]} | ${rank}`);
-    await interaction.reply(`Set rank for ${user.username} to ${rank}`);
+    await interaction.reply(`Set rank for ${member.user.username} to ${rank}`);
   },
 };
