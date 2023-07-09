@@ -10,7 +10,7 @@ module.exports = {
   async execute(interaction) {
     console.log(interaction); // Log the interaction object
 
-    const user = interaction.options.getUser('target');
+    const user = interaction.options.getMember('target');
     const rank = interaction.options.getString('rank');
 
     console.log(`Rank: ${rank}`); // Log the rank
